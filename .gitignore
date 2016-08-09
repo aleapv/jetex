@@ -1,3 +1,9 @@
+jre/
+ServiceTest.class
+ServiceTest.jar
+jettyService.exe
+work/
 project/project/
 project/target/
 target/
+lib/

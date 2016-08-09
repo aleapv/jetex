@@ -9,6 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.boris.winrun4j.AbstractService;
+import org.boris.winrun4j.EventLog;
+import org.boris.winrun4j.ServiceException;
+
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -25,7 +29,7 @@ import org.eclipse.jetty.util.log.StdErrLog;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-public class JettyStart {
+public class JettyStart  extends AbstractService {
 
     public final static String KEY_STORE_PATH = "C:\\Alex\\portal_sequrity3\\etc\\keystore";
     public final static String KEY_STORE_PASSWORD = "OBF:194s194u194w194y";
@@ -40,11 +44,20 @@ public class JettyStart {
     public final static String[] INCLUDE_CIPHER_SUITES = {"TLS_CIPHER_2001", "TLS_CIPHER_2012"};
     public final static boolean USE_CIPHER_SUITES_ORDER = true;
 
-    public static void main( String[] args ) throws Exception {
+  /**
+   * Debug with console app
+   */
+    public static void main(String[] args) throws ServiceException {
+
+        new JettyStart().serviceMain(args);
+    }
+  
+    public int serviceMain(String[] args) throws ServiceException {
 
         File keystoreFile = new File(KEY_STORE_PATH);
         if (!keystoreFile.exists())
-            throw new FileNotFoundException(keystoreFile.getAbsolutePath());
+	  // TODO handler extends ServiceException
+      	  System.out.println("FileNotFoundException "+ keystoreFile.getAbsolutePath());
 
         // start.ini settings
 
@@ -111,7 +124,13 @@ public class JettyStart {
         server.setHandler(handler);
         handler.addServletWithMapping(Test.class, "/*");
 
-        server.start();
-        server.join();
+	try {
+	  server.start();
+	  server.join();
+	} catch(Exception e) {
+	  // TODO handler extends ServiceException
+	}
+
+	return 0;
     }
 }
